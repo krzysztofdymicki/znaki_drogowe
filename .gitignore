@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Środowisko wirtualne (bardzo ważne!)
+venv/
+env/
+.env
+
+# Pobrane dane, obrazy i wagi modelu 
+# (Zbiór GTSRB waży kilkaset MB, nie wrzucamy tego na GitHuba!)
+data/raw/
+data/processed/
+models/
+*.h5
+*.hdf5
+*.pt
+*.pth
+
+# Konfiguracja IDE (Visual Studio Code, PyCharm itp.)
+.vscode/
+.idea/
+.DS_Store

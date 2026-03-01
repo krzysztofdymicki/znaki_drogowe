@@ -1,0 +1,26 @@
+# Manipulacja danymi i tablice
+numpy
+pandas
+
+# Wizualizacja danych i metryk
+matplotlib
+seaborn
+
+# Przetwarzanie i ładowanie obrazów
+opencv-python
+Pillow
+scikit-learn
+
+# AI i Deep Learning (zakładamy użycie TensorFlow, popularnego do obrazów CIFAR/GTSRB)
+tensorflow
+# Jeśli preferujecie PyTorch, odkomentujcie poniższe, a zakomentujcie tensorflow
+# torch
+# torchvision
+# torchaudio
+
+# Jupyter Notebook do przeprowadzania testów
+jupyter
+notebook
+
+# Opcjonalnie do ułatwienia pobierania danych prosto ze skryptu z Kaggle
+kaggle
