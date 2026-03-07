@@ -63,6 +63,13 @@ def show_sample_images(dataset, class_names=None, n=9):
     plt.show()
 
 #wczytanie danych
-dataset = create_dataset(r"d:\magisterka\semestr 2\Projekt SI\archive\Train")
+# Budujemy ścieżkę relatywną do folderu 'data/raw/Train'
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+data_path = os.path.join(project_root, "data", "raw", "Train")
+
+if not os.path.exists(data_path):
+    print(f"BŁĄD: Nie znaleziono danych w: {data_path}")
+else:
+    dataset = create_dataset(data_path)
 # test poprawności wczytania
 show_sample_images(dataset, class_names=None, n=9)
