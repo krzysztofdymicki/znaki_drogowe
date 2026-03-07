@@ -26,3 +26,6 @@ models/
 .vscode/
 .idea/
 .DS_Store
+data/combined/
+data/balanced/
+.venv/
