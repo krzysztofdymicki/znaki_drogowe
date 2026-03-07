@@ -34,3 +34,5 @@ def final_preprocess(image):
 # 2. img = initial_preprocess(raw_img)
 # 3. img = apply_augmentation(img)  <-- Tu wchodzi działka Lubomira
 # 4. ready_img = final_preprocess(img)
+
+# KOMENTARZ DO PULL REQUESTA
