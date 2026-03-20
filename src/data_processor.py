@@ -99,7 +99,7 @@ def balance_dataset(data_dir="data/combined", target_dir="data/balanced", method
         print("Brak danych do zbalansowania. Uruchom najpierw merge_train_test().")
         return
 
-    max_samples = max(class_counts.values())
+    max_samples = max(class_counts.values())/2  # Dla bezpieczeństwa nie przesadzamy z oversamplingiem
     print(f"Najliczniejsza klasa ma {max_samples} próbek. Metoda wyrównywania: {method}")
 
     for class_name, count in class_counts.items():
@@ -114,7 +114,7 @@ def balance_dataset(data_dir="data/combined", target_dir="data/balanced", method
             for img in images:
                 shutil.copy(img, dest_class_dir / img.name)
             
-            # Wyrównujemy do max_samples
+            # Wyrównujemy do max_samples/2
             num_to_add = max_samples - count
             if num_to_add > 0:
                 print(f"Klasa {class_name}: balansowanie (+{num_to_add} próbek).")
