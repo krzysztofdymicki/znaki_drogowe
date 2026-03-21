@@ -51,11 +51,11 @@ def get_augmentation_layer():
         # === Fotometryczne ===
         # RandomBrightness i RandomContrast działają poprawnie na [0,1]
         tf.keras.layers.RandomBrightness(
-            factor=0.2,            # ±20% jasności
+            factor=0.10,            # ±10% jasności
             value_range=(0.0, 1.0) # zakres danych wejściowych
         ),
         tf.keras.layers.RandomContrast(
-            factor=0.2             # ±20% kontrastu
+            factor=0.10             # ±10% kontrastu
         ),
         
     ], name='augmentation')
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     current_dir = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, current_dir)
     
-    from data_loader import get_loaders
+    from propozycja_loadera import get_loaders
     
     if os.path.exists("data/balanced"):
         print("Test augmentacji...")

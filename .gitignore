@@ -17,10 +17,14 @@ env/
 data/raw/
 data/processed/
 models/
+data/combined/
+data/balanced/
 *.h5
 *.hdf5
 *.pt
 *.pth
+*.png
+*.json
 
 # Konfiguracja IDE (Visual Studio Code, PyCharm itp.)
 .vscode/

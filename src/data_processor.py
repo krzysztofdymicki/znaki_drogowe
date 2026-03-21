@@ -3,6 +3,8 @@ import shutil
 import pandas as pd
 import numpy as np
 from pathlib import Path
+from sklearn.utils.class_weight import compute_class_weight
+import json      
 
 def get_kaggle_instructions():
     """Zwraca instrukcję konfiguracji Kaggle API."""
@@ -82,7 +84,7 @@ def merge_train_test(raw_path="data/raw", combined_path="data/combined"):
     
     print(f"Zadanie 1 zakończone. Dane połączone w: {combined_path}")
 
-def balance_dataset(data_dir="data/combined", target_dir="data/balanced", method="oversample"):
+def balance_dataset(data_dir="data/combined", target_dir="data/balanced", method="oversample", weights_file="data/class_weights.json"):
     """
     Zadanie 2: Wyrównuje liczebność klas, aby zmniejszyć nierówność reprezentacji.
     """
@@ -99,8 +101,11 @@ def balance_dataset(data_dir="data/combined", target_dir="data/balanced", method
         print("Brak danych do zbalansowania. Uruchom najpierw merge_train_test().")
         return
 
-    max_samples = max(class_counts.values())/2  # Dla bezpieczeństwa nie przesadzamy z oversamplingiem
+    max_samples = max(class_counts.values())  
     print(f"Najliczniejsza klasa ma {max_samples} próbek. Metoda wyrównywania: {method}")
+    
+    # Słownik do śledzenia liczebności PO balansowaniu
+    class_counts_after = {}
 
     for class_name, count in class_counts.items():
         src_class_dir = data_dir / class_name
@@ -114,19 +119,57 @@ def balance_dataset(data_dir="data/combined", target_dir="data/balanced", method
             for img in images:
                 shutil.copy(img, dest_class_dir / img.name)
             
-            # Wyrównujemy do max_samples/2
-            num_to_add = max_samples - count
+            # Wyrównujemy do max_samples/2 (aby nie przesadzić z duplikacją)
+            num_to_add = int(max_samples/2 - count)
             if num_to_add > 0:
                 print(f"Klasa {class_name}: balansowanie (+{num_to_add} próbek).")
                 for i in range(num_to_add):
                     img_to_copy = np.random.choice(images)
                     new_name = f"bal_{i}_{img_to_copy.name}"
                     shutil.copy(img_to_copy, dest_class_dir / new_name)
+                class_counts_after[class_name] = int(max_samples/2)
+            else:
+                class_counts_after[class_name] = count
 
     print(f"Zadanie 2 zakończone. Dane zbalansowane w: {target_dir}")
+
+ # ===========================================================
+    # NOWE: Zapis wag klas do pliku JSON
+    # ===========================================================
+    print("Obliczanie i zapisywanie wag klas...")
+    
+    # Utwórz tablicę etykiet na podstawie liczebności po balansowaniu
+    labels = []
+    for class_name, count in class_counts_after.items():
+        class_id = int(class_name)
+        labels.extend([class_id] * count)
+    labels = np.array(labels)
+    
+    # Oblicz wagi
+    classes = np.unique(labels)
+    weights = compute_class_weight(
+        class_weight='balanced',
+        classes=classes,
+        y=labels
+    )
+    
+    # Wygładzanie (sqrt)
+    weights = np.power(weights, 0.5)
+    
+    # Konwertuj na słownik
+    class_weights = {int(c): float(w) for c, w in zip(classes, weights)}
+    
+    # Zapisz do pliku
+    weights_path = Path(weights_file)
+    weights_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    with open(weights_path, 'w') as f:
+        json.dump(class_weights, f, indent=2)
+    
+    print(f"Wagi klas zapisane do: {weights_path}")
 
 if __name__ == "__main__":
     # Scenariusz użycia dla zadań 1 i 2
     if download_dataset():
-        merge_train_test(raw_path="data/raw", combined_path="data/combined")
+       # merge_train_test(raw_path="data/raw", combined_path="data/combined")
         balance_dataset(data_dir="data/combined", target_dir="data/balanced")
