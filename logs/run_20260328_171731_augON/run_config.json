@@ -1,0 +1,19 @@
+{
+  "run_name": "run_20260328_171731_augON",
+  "device": "CPU",
+  "augmentation": true,
+  "epochs_requested": 30,
+  "epochs_trained": 20,
+  "best_val_accuracy": 0.9991,
+  "final_val_accuracy": 0.9979,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "img_size": 32,
+  "seed": 42,
+  "patience": 7,
+  "data_dir": "C:\\studia_wsb\\znaki_drogowe\\data\\balanced",
+  "use_combined": false,
+  "class_weight_used": false,
+  "model_path": "C:\\studia_wsb\\znaki_drogowe\\models\\final_run_20260328_171731_augON.keras",
+  "best_model_path": "C:\\studia_wsb\\znaki_drogowe\\models\\best_model.keras"
+}

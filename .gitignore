@@ -16,7 +16,6 @@ env/
 # (Zbiór GTSRB waży kilkaset MB, nie wrzucamy tego na GitHuba!)
 data/raw/
 data/processed/
-models/
 *.h5
 *.hdf5
 *.pt
@@ -28,4 +27,7 @@ models/
 .DS_Store
 data/combined/
 data/balanced/
+data/train_balanced/
+data/test/
 .venv/
+
