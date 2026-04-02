@@ -22,5 +22,11 @@ tensorflow
 jupyter
 notebook
 
+# GUI (interfejs w przegladarce)
+gradio
+
+# Logowanie treningow
+tensorboard
+
 # Opcjonalnie do ułatwienia pobierania danych prosto ze skryptu z Kaggle
 kaggle
