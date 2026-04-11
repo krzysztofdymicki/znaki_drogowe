@@ -30,6 +30,7 @@ import tensorflow as tf
 from cnn_builder import build_model
 from class_weights import load_class_weights, save_class_weights
 
+
 # ---------------------------------------------------------------------------
 # Sciezki
 # ---------------------------------------------------------------------------
@@ -38,7 +39,7 @@ TRAIN_RAW = os.path.join(RAW_PATH, "Train")
 TEST_RAW = os.path.join(RAW_PATH, "Test")
 TEST_CSV = os.path.join(RAW_PATH, "Test.csv")
 
-TRAIN_BALANCED = os.path.join(PROJECT_ROOT, "data", "train_balanced")
+#TRAIN_BALANCED = os.path.join(PROJECT_ROOT, "data", "train_balanced")
 TEST_DIR = os.path.join(PROJECT_ROOT, "data", "test")
 WEIGHTS_PATH = os.path.join(PROJECT_ROOT, "config", "class_weights.json")
 MODEL_DIR = os.path.join(PROJECT_ROOT, "models")
@@ -100,20 +101,20 @@ def prepare_test_set():
 
     print(f"Test set: {copied} obrazow w {TEST_DIR}")
 
-
+"""
 def prepare_train_balanced():
-    """
+    
     Balansuje TYLKO dane treningowe (data/raw/Train) przez oversampling.
     Wynik: data/train_balanced/{ClassId}/{obrazki}
     Test set NIE jest mieszany z danymi treningowymi.
-    """
+    
     if os.path.exists(TRAIN_BALANCED):
         return
 
     print("Balansuje dane treningowe (tylko Train, bez Test)...")
     from data_processor import balance_dataset
     balance_dataset(data_dir=TRAIN_RAW, target_dir=TRAIN_BALANCED)
-
+"""
 
 def ensure_data_ready():
     """Sprawdza czy dane sa przygotowane, jesli nie — przygotowuje."""
@@ -126,7 +127,7 @@ def ensure_data_ready():
         print(f"BLAD: Brak pliku {TEST_CSV}")
         return False
 
-    prepare_train_balanced()
+    
     prepare_test_set()
     return True
 
@@ -137,14 +138,15 @@ def ensure_data_ready():
 
 def load_train_val(data_dir, img_size, batch_size, seed):
     """Laduje zbiory train/val z katalogu (80/20 split)."""
-    train_ds = tf.keras.utils.image_dataset_from_directory(
+    train_ds_raw = tf.keras.utils.image_dataset_from_directory(
         data_dir,
         validation_split=0.2,
         subset="training",
         seed=seed,
         image_size=(img_size, img_size),
-        batch_size=batch_size,
+        batch_size=None,
         label_mode="int",
+        shuffle=True,
     )
 
     val_ds = tf.keras.utils.image_dataset_from_directory(
@@ -155,8 +157,13 @@ def load_train_val(data_dir, img_size, batch_size, seed):
         image_size=(img_size, img_size),
         batch_size=batch_size,
         label_mode="int",
+        shuffle=False,
     )
-
+      # --- 3. Oversampling TYLKO na train ---
+    print("\n--- Oversampling zbioru treningowego ---")
+    from data_processor import apply_oversampling
+    train_ds = apply_oversampling(train_ds_raw, num_classes=43, seed=seed)
+    train_ds = train_ds.batch(batch_size)
     train_ds = train_ds.cache().prefetch(tf.data.AUTOTUNE)
     val_ds = val_ds.cache().prefetch(tf.data.AUTOTUNE)
 
@@ -271,7 +278,7 @@ def run_training(args):
     if not ensure_data_ready():
         sys.exit(1)
 
-    print(f"Trening:    {TRAIN_BALANCED} (zbalansowany Train)")
+    print(f"Trening:    {TRAIN_RAW} ( Train)")
     print(f"Test:       {TEST_DIR} (held-out, nie widziany przez model)")
 
     # -- 2. Wagi klas --
@@ -289,7 +296,7 @@ def run_training(args):
     # -- 3. Ladowanie danych --
     print("\n--- 3. Ladowanie danych treningowych ---")
     train_ds, val_ds = load_train_val(
-        TRAIN_BALANCED, args.img_size, args.batch_size, args.seed
+        TRAIN_RAW, args.img_size, args.batch_size, args.seed
     )
 
     # -- 4. Budowa modelu --
@@ -373,7 +380,7 @@ def run_training(args):
         "img_size": args.img_size,
         "seed": args.seed,
         "patience": args.patience,
-        "data_source": "data/train_balanced (only Train, no Test leak)",
+        "data_source":"data/raw/Train (oversampling w pamięci)",
         "model_path": final_model_path,
         "best_model_path": best_model_path,
     }
