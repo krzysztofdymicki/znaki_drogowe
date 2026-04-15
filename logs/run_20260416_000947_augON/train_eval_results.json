@@ -1,0 +1,183 @@
+{
+  "model_path": "C:/znaki_v222/znaki_drogowe\\models\\best_run_20260416_000947_augON.keras",
+  "eval_dir": "C:/znaki_v222/znaki_drogowe\\data\\train_balanced",
+  "eval_set": "train_balanced (full training set)",
+  "train_loss": 0.0034,
+  "train_accuracy": 0.999,
+  "total_samples": 96750,
+  "correct_predictions": 96653,
+  "per_class": {
+    "0": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "1": {
+      "accuracy": 0.992,
+      "samples": 2250
+    },
+    "10": {
+      "accuracy": 0.9996,
+      "samples": 2250
+    },
+    "11": {
+      "accuracy": 0.9987,
+      "samples": 2250
+    },
+    "12": {
+      "accuracy": 0.9978,
+      "samples": 2250
+    },
+    "13": {
+      "accuracy": 0.9973,
+      "samples": 2250
+    },
+    "14": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "15": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "16": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "17": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "18": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "19": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "2": {
+      "accuracy": 0.9973,
+      "samples": 2250
+    },
+    "20": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "21": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "22": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "23": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "24": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "25": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "26": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "27": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "28": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "29": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "3": {
+      "accuracy": 0.9933,
+      "samples": 2250
+    },
+    "30": {
+      "accuracy": 0.9982,
+      "samples": 2250
+    },
+    "31": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "32": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "33": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "34": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "35": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "36": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "37": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "38": {
+      "accuracy": 0.9996,
+      "samples": 2250
+    },
+    "39": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "4": {
+      "accuracy": 0.9982,
+      "samples": 2250
+    },
+    "40": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "41": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "42": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "5": {
+      "accuracy": 0.9924,
+      "samples": 2250
+    },
+    "6": {
+      "accuracy": 1.0,
+      "samples": 2250
+    },
+    "7": {
+      "accuracy": 0.9942,
+      "samples": 2250
+    },
+    "8": {
+      "accuracy": 0.9982,
+      "samples": 2250
+    },
+    "9": {
+      "accuracy": 1.0,
+      "samples": 2250
+    }
+  }
+}
