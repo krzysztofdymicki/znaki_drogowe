@@ -32,7 +32,7 @@ from cnn_builder import build_model
 # ---------------------------------------------------------------------------
 MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
 TEST_DIR = os.path.join(PROJECT_ROOT, "data", "test")
-TRAIN_BALANCED = os.path.join(PROJECT_ROOT, "data", "train_balanced")
+TRAIN_RAW = os.path.join(PROJECT_ROOT, "data","raw", "train")
 
 # ---------------------------------------------------------------------------
 # Nazwy znakow GTSRB (niemieckie znaki drogowe)
@@ -142,12 +142,12 @@ def make_history_plot(history):
 def run_training(epochs, lr, batch_size, use_augmentation, patience):
     """Generator — trenuje epoka po epoce i zwraca postep na zywo."""
 
-    if not os.path.exists(TRAIN_BALANCED):
+    if not os.path.exists(TRAIN_RAW):
         yield "BLAD: Brak danych treningowych. Uruchom najpierw:\n  python src/pipeline.py", None
         return
 
     yield "Ladowanie danych...", None
-
+    """
     train_ds = tf.keras.utils.image_dataset_from_directory(
         TRAIN_BALANCED, validation_split=0.2, subset="training",
         seed=42, image_size=(32, 32), batch_size=int(batch_size), label_mode="int",
@@ -158,6 +158,39 @@ def run_training(epochs, lr, batch_size, use_augmentation, patience):
     )
     train_ds = train_ds.cache().prefetch(tf.data.AUTOTUNE)
     val_ds = val_ds.cache().prefetch(tf.data.AUTOTUNE)
+    """
+    train_ds_raw = tf.keras.utils.image_dataset_from_directory(
+        TRAIN_RAW,
+        validation_split=0.2,
+        subset="training",
+        seed=42,
+        image_size=(32, 32),
+        batch_size=None,
+        label_mode="int",
+        shuffle=True,
+    )
+
+    val_ds = tf.keras.utils.image_dataset_from_directory(
+        TRAIN_RAW,
+        validation_split=0.2,
+        subset="validation",
+        seed=42,
+        image_size=(32, 32),
+        batch_size=int(batch_size),
+        label_mode="int",
+        shuffle=False,
+    )
+      # --- 3. Oversampling TYLKO na train ---
+    print("\n--- Oversampling zbioru treningowego ---")
+    from data_processor import apply_oversampling
+    train_ds = apply_oversampling(train_ds_raw, num_classes=43, seed=42)
+    train_ds = train_ds.batch(int(batch_size))
+    train_ds = train_ds.cache().prefetch(tf.data.AUTOTUNE)
+    val_ds = val_ds.cache().prefetch(tf.data.AUTOTUNE)
+
+    num_train = train_ds.cardinality().numpy() * int(batch_size)
+    num_val = val_ds.cardinality().numpy() * int(batch_size)
+    print(f"Train: ~{num_train} obrazow | Val: ~{num_val} obrazow")
 
     yield "Budowa modelu...", None
 

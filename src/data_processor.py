@@ -3,6 +3,7 @@ import shutil
 import pandas as pd
 import numpy as np
 from pathlib import Path
+import tensorflow as tf
 
 def get_kaggle_instructions():
     """Zwraca instrukcję konfiguracji Kaggle API."""
@@ -124,6 +125,76 @@ def balance_dataset(data_dir="data/combined", target_dir="data/balanced", method
                     shutil.copy(img_to_copy, dest_class_dir / new_name)
 
     print(f"Zadanie 2 zakończone. Dane zbalansowane w: {target_dir}")
+
+def apply_oversampling(dataset, num_classes=43, seed=42):
+    """
+    Oversampling w pamięci na tf.data.Dataset.
+    
+    Strategia:
+    1. Grupuje próbki według klas
+    2. Znajduje najliczniejszą klasę
+    3. Powtarza próbki z mniejszych klas 
+    
+    Args:
+        dataset:     tf.data.Dataset (niebatchowany!)
+        num_classes: liczba klas
+        seed:        dla reprodukowalności
+    
+    Returns:
+        tf.data.Dataset — zbalansowany
+    """
+    tf.random.set_seed(seed)
+    
+    # --- 1. Rozpakuj dataset do list per klasa ---
+    class_datasets = {}
+    class_counts = {}
+    
+    # Konwertuj do numpy (dla małych/średnich datasetów OK)
+    images_list = [[] for _ in range(num_classes)]
+    
+    for image, label in dataset:
+        label_int = int(label.numpy())
+        images_list[label_int].append(image)
+    
+    # Policz próbki per klasa
+    for i in range(num_classes):
+        class_counts[i] = len(images_list[i])
+    
+    max_count = max(class_counts.values())
+    print(f"Oversampling: max_count = {max_count}")
+    
+    # --- 2. Stwórz zbalansowane datasety per klasa ---
+    balanced_datasets = []
+    
+    for class_id in range(num_classes):
+        if class_counts[class_id] == 0:
+            continue
+            
+        # Stack do tensora
+        class_images = tf.stack(images_list[class_id])
+        class_labels = tf.fill([len(images_list[class_id])], class_id)
+        
+        class_ds = tf.data.Dataset.from_tensor_slices((class_images, class_labels))
+        
+        # Repeat + take dla oversamplingu
+        if class_counts[class_id] < max_count:
+            # Powtarzaj w nieskończoność, weź max_count
+            class_ds = class_ds.repeat().take(max_count)
+        
+        balanced_datasets.append(class_ds)
+    
+    # --- 3. Połącz wszystkie klasy ---
+    balanced_ds = balanced_datasets[0]
+    for ds in balanced_datasets[1:]:
+        balanced_ds = balanced_ds.concatenate(ds)
+    
+    # --- 4. Shuffle ---
+    total_samples = max_count * num_classes
+    balanced_ds = balanced_ds.shuffle(buffer_size=min(total_samples, 50000), seed=seed)
+    
+    print(f"Oversampling zakończony: {total_samples} próbek")
+    
+    return balanced_ds
 
 if __name__ == "__main__":
     # Scenariusz użycia dla zadań 1 i 2

@@ -57,14 +57,14 @@ def build_model(input_shape=(32, 32, 3), num_classes=43, use_augmentation=True):
     model.add(tf.keras.layers.Rescaling(1.0 / 255, name="normalization"))
 
     # --- Blok konwolucyjny 1 ---
-    model.add(tf.keras.layers.Conv2D(32, (3, 3), activation="relu", name="conv1a"))
-    model.add(tf.keras.layers.Conv2D(32, (3, 3), activation="relu", name="conv1b"))
+    model.add(tf.keras.layers.Conv2D(32, (3, 3), padding="same", activation="relu", name="conv1a"))
+    model.add(tf.keras.layers.Conv2D(32, (3, 3), padding="same", activation="relu", name="conv1b"))
     model.add(tf.keras.layers.MaxPooling2D((2, 2), name="pool1"))
     model.add(tf.keras.layers.Dropout(0.25, name="drop1"))
 
     # --- Blok konwolucyjny 2 ---
-    model.add(tf.keras.layers.Conv2D(64, (3, 3), activation="relu", name="conv2a"))
-    model.add(tf.keras.layers.Conv2D(64, (3, 3), activation="relu", name="conv2b"))
+    model.add(tf.keras.layers.Conv2D(64, (3, 3), padding="same", activation="relu", name="conv2a"))
+    model.add(tf.keras.layers.Conv2D(64, (3, 3), padding="same", activation="relu", name="conv2b"))
     model.add(tf.keras.layers.MaxPooling2D((2, 2), name="pool2"))
     model.add(tf.keras.layers.Dropout(0.25, name="drop2"))
 
